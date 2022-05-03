@@ -1,0 +1,26 @@
+name: "Deploy with Bacon"
+description: "Deploy DNS records with Bacon"
+inputs:
+  config:
+    description: "Config file to deploy"
+    required: true
+  delete:
+    description: "Delete outdated records"
+    default: false
+  create:
+    description: "Create new records"
+    default: false
+runs:
+  using: "composite"
+  steps:
+    - id: parse-
+    - uses: actions/checkout@v3
+    - uses: actions/setup-go@v3
+      with:
+        go-version: "^1.18"
+    - run: go version
+    - run: go build -o bin/bacon .
+    - run: |
+        [ ${{ inputs.delete }} = 'true' ] && DELETE='-c' || DELETE=''
+        [ ${{ inputs.create }} = 'true' ] && CREATE='-c' || CREATE=''
+        bin/bacon deploy ${{ inputs.config }} $DELETE $CREATE
