@@ -13,14 +13,27 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - id: parse-
-    - uses: actions/checkout@v3
+    - name: Checkout workspace
+      uses: actions/checkout@v3
+      with:
+        path: workspace
+    - name: Checkout Bacon
+      uses: actions/checkout@v3
+      with:
+        repo: jungaretti/bacon
+        path: bacon
+    
     - uses: actions/setup-go@v3
       with:
-        go-version: "^1.18"
-    - run: go version
-    - run: go build -o bin/bacon .
-    - run: |
+        go-version: "1.18"
+    - name: Build Bacon
+      working-directory: bacon
+      run: go build -o bin/bacon .
+
+    - name: Ping
+      run: bacon/bin/bacon ping
+    - name: Deploy
+      run: |
         [ ${{ inputs.delete }} = 'true' ] && DELETE='-c' || DELETE=''
         [ ${{ inputs.create }} = 'true' ] && CREATE='-c' || CREATE=''
-        bin/bacon deploy ${{ inputs.config }} $DELETE $CREATE
+        bacon/bin/bacon deploy workspace/${{ inputs.config }} $DELETE $CREATE
