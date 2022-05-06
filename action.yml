@@ -1,43 +1,47 @@
 name: "Deploy with Bacon"
 description: "Deploy DNS records with Bacon"
 inputs:
+  api-key:
+    description: "Porkbun API key"
+    required: true
+  secret-key:
+    description: "Porkbun secret key"
+    required: true
   config:
     description: "Config file to deploy"
     required: true
-  delete:
-    description: "Delete outdated records"
-    required: false
   create:
     description: "Create new records"
+    required: false
+  delete:
+    description: "Delete outdated records"
     required: false
 runs:
   using: "composite"
   steps:
-    - name: Checkout workspace
-      uses: actions/checkout@v3
-      with:
-        path: workspace
-
-    # Clone and build Bacon
     - name: Install Go
       uses: actions/setup-go@v3
       with:
         go-version: "1.18"
     - name: Clone bacon
-      shell: bash
-      run: git clone https://github.com/jungaretti/bacon.git bacon
-    - name: Build bacon
-      shell: bash
-      working-directory: bacon
-      run: go build -o bin/bacon .
-
-    # Ping and deploy the config file
-    - name: Ping test
-      shell: bash
-      run: bacon/bin/bacon ping
-    - name: Deploy config
+      id: clone-bacon
       shell: bash
       run: |
-        [ ${{ inputs.delete }} = 'true' ] && DELETE='-c' || DELETE=''
-        [ ${{ inputs.create }} = 'true' ] && CREATE='-c' || CREATE=''
-        bacon/bin/bacon deploy workspace/${{ inputs.config }} $DELETE $CREATE
+        BACON_DIR="$(mktemp -d)"
+        echo "::set-output name=bacon_dir::$BACON_DIR"
+        git clone https://github.com/jungaretti/bacon.git $BACON_DIR
+    - name: Build bacon
+      shell: bash
+      working-directory: ${{ steps.clone-bacon.outputs.bacon_dir }}
+      run: go build -o bin/bacon .
+
+    - name: Deploy records
+      shell: bash
+      env:
+        BACON_BIN: ${{ steps.clone-bacon.outputs.bacon_dir }}/bin/bacon
+        PORKBUN_API_KEY: ${{ inputs.api-key }}
+        PORKBUN_SECRET_KEY: ${{ inputs.secret-key }}
+      run: |
+        [ "${{ inputs.delete }}" = 'true' ] && DELETE='-d' || DELETE=''
+        [ "${{ inputs.create }}" = 'true' ] && CREATE='-c' || CREATE=''
+        $BACON_BIN ping && $BACON_BIN deploy ${{ inputs.config }} $DELETE $CREATE
