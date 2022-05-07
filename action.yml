@@ -46,6 +46,6 @@ runs:
         PORKBUN_API_KEY: ${{ inputs.api-key }}
         PORKBUN_SECRET_KEY: ${{ inputs.secret-key }}
       run: |
-        [ "${{ inputs.delete }}" = 'true' ] && DELETE='-d' || DELETE=''
-        [ "${{ inputs.create }}" = 'true' ] && CREATE='-c' || CREATE=''
+        test "${{ inputs.delete }}" = 'true' && DELETE='-d' || DELETE=''
+        test "${{ inputs.create }}" = 'true' && CREATE='-c' || CREATE=''
         $BACON_BIN ping && $BACON_BIN deploy ${{ inputs.config }} $DELETE $CREATE
