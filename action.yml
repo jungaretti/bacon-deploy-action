@@ -19,26 +19,29 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Install Go
-      uses: actions/setup-go@v3
+    - uses: pozetroninc/github-action-get-latest-release@v0.5.0
+      id: get-bacon-release
+      name: Fetch Bacon version
       with:
-        go-version: "1.18"
-    - name: Clone bacon
-      id: clone-bacon
+        owner: jungaretti
+        repo: bacon
+        excludes: prerelease, draft
+    - name: Download Bacon
       shell: bash
       run: |
-        BACON_DIR="$(mktemp -d)"
-        echo "::set-output name=bacon_dir::$BACON_DIR"
-        git clone https://github.com/jungaretti/bacon.git $BACON_DIR
-    - name: Build bacon
-      shell: bash
-      working-directory: ${{ steps.clone-bacon.outputs.bacon_dir }}
-      run: go build -o bin/bacon .
+        VERSION=${{ steps.get-bacon-release.outputs.release }}
+        ASSET="bacon-$VERSION-linux-amd64.tar.gz"
+        URL="https://github.com/jungaretti/bacon/releases/download/$VERSION/$ASSET"
 
+        # Download Bacon
+        pushd "$(mktemp -d)"
+        wget $URL -O $ASSET
+        tar -xf $ASSET
+        echo "::set-output name=bacon_bin::$(pwd)/bacon"
     - name: Deploy records
       shell: bash
       env:
-        BACON_BIN: ${{ steps.clone-bacon.outputs.bacon_dir }}/bin/bacon
+        BACON_BIN: ${{ steps.clone-bacon.outputs.bacon_bin }}
         PORKBUN_API_KEY: ${{ inputs.api-key }}
         PORKBUN_SECRET_KEY: ${{ inputs.secret-key }}
       run: |
