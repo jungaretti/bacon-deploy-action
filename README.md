@@ -1,6 +1,6 @@
 # Bacon Deploy Action
 
-Deploy DNS records with ease
+Deploy DNS records easily with Bacon.
 
 ## Getting Started
 
