@@ -20,13 +20,14 @@ runs:
   using: "composite"
   steps:
     - uses: pozetroninc/github-action-get-latest-release@v0.5.0
-      id: get-bacon-release
       name: Fetch Bacon version
+      id: get-bacon-release
       with:
         owner: jungaretti
         repo: bacon
         excludes: draft
     - name: Download Bacon
+      id: download-bacon
       shell: bash
       run: |
         VERSION=${{ steps.get-bacon-release.outputs.release }}
@@ -41,7 +42,7 @@ runs:
     - name: Deploy records
       shell: bash
       env:
-        BACON_BIN: ${{ steps.clone-bacon.outputs.bacon_bin }}
+        BACON_BIN: ${{ steps.download-bacon.outputs.bacon_bin }}
         PORKBUN_API_KEY: ${{ inputs.api-key }}
         PORKBUN_SECRET_KEY: ${{ inputs.secret-key }}
       run: |
