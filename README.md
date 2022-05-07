@@ -5,6 +5,11 @@ Deploy DNS records easily with Bacon.
 ## Getting Started
 
 ```yaml
+name: Deploy DNS Records
+on:
+  push:
+    branches:
+      - main
 jobs:
   deploy:
     name: Deploy DNS Records
