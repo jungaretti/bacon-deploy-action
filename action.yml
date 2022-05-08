@@ -1,5 +1,8 @@
 name: "Deploy with Bacon"
 description: "Deploy DNS records with Bacon"
+branding:
+  icon: cloud-lightning
+  color: red
 inputs:
   api-key:
     description: "Porkbun API key"
