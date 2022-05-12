@@ -28,7 +28,7 @@ runs:
       with:
         owner: jungaretti
         repo: bacon
-        excludes: draft
+        excludes: prerelease, draft
     - name: Download Bacon
       id: download-bacon
       shell: bash
