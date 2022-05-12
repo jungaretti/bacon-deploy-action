@@ -1,12 +1,12 @@
 # Bacon Deploy Action
 
-Deploy DNS records with Bacon and GitHub Actions.
+Deploy DNS records with [Bacon](https://github.com/jungaretti/bacon) and GitHub Actions.
 
 ## Usage
 
 Sign into Porkbun's website and [generate a new API keyset](https://porkbun.com/account/api) for your account. Read the ["Generating API Keys" section of Porkbun's docs](https://kb.porkbun.com/article/190-getting-started-with-the-porkbun-dns-api) for more detailed instructions.
 
-[Create encrypted repository secrets to store your Porkbun API keys](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository) and pass them to this action using `${{ secrets.SECRET_NAME }}`.
+[Create encrypted repository secrets to store your Porkbun API keys](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository) and pass them to this action using `${{ secrets.YOUR_SECRET_NAME }}`.
 
 ### Basic Example
 
