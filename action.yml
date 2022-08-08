@@ -19,6 +19,10 @@ inputs:
   delete:
     description: "Delete outdated records"
     required: false
+  version:
+    description: "Version of Bacon to download and use"
+    required: false
+    default: latest
 runs:
   using: "composite"
   steps:
@@ -33,14 +37,18 @@ runs:
       id: download-bacon
       shell: bash
       run: |
-        VERSION=${{ steps.get-bacon-release.outputs.release }}
-        ASSET="bacon-$VERSION-linux-amd64.tar.gz"
-        URL="https://github.com/jungaretti/bacon/releases/download/$VERSION/$ASSET"
+        version="${{ inputs.version }}"
+        if [ "$version" = "latest" ]; then
+          version="${{ steps.get-bacon-release.outputs.release }}"
+        fi
+
+        asset="bacon-$version-linux-amd64.tar.gz"
+        url="https://github.com/jungaretti/bacon/releases/download/$version/$asset"
 
         # Download Bacon
         pushd "$(mktemp -d)"
-        wget $URL -O $ASSET
-        tar -xf $ASSET
+        wget $url -O $asset
+        tar -xf $asset
         echo "::set-output name=bacon_bin::$(pwd)/bacon"
     - name: Deploy records
       shell: bash
