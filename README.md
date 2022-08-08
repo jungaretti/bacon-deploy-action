@@ -35,10 +35,11 @@ jobs:
 
 ### Parameters
 
-| Parameter  | Required/Optional | Description                                                   |
-| ---------- | ----------------- | ------------------------------------------------------------- |
-| api-key    | Required          | Your Porkbun API key                                          |
-| secret-key | Required          | Your Porkbun API secret key                                   |
-| config     | Required          | YAML config file for your DNS records                         |
-| create     | Optional          | Flag to create new DNS records. Uses `false` by default.      |
-| delete     | Optional          | Flag to delete outdated DNS records. Uses `false` by default. |
+| Parameter  | Required/Optional | Description                                                     |
+| ---------- | ----------------- | --------------------------------------------------------------- |
+| api-key    | Required          | Your Porkbun API key                                            |
+| secret-key | Required          | Your Porkbun API secret key                                     |
+| config     | Required          | YAML config file for your DNS records                           |
+| create     | Optional          | Flag to create new DNS records. Uses `false` by default.        |
+| delete     | Optional          | Flag to delete outdated DNS records. Uses `false` by default.   |
+| version    | Optional          | Version of Bacon to download and use. Uses `latest` by default. |
