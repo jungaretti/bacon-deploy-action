@@ -47,7 +47,7 @@ runs:
 
         # Download Bacon
         pushd "$(mktemp -d)"
-        wget $url -O $asset
+        wget $url -O $asset --progress=dot:mega
         tar -xf $asset
         echo "::set-output name=bacon_bin::$(pwd)/bacon"
     - name: Deploy records
