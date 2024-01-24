@@ -58,4 +58,12 @@ runs:
       run: |
         test "${{ inputs.delete }}" = 'true' && DELETE='-d' || DELETE=''
         test "${{ inputs.create }}" = 'true' && CREATE='-c' || CREATE=''
-        $BACON_BIN ping && $BACON_BIN deploy ${{ inputs.config }} $DELETE $CREATE
+
+        ping_command="$BACON_BIN ping"
+        deploy_command="$BACON_BIN deploy ${{ inputs.config }} $DELETE $CREATE"
+
+        echo "Running $ping_command"
+        $ping_command
+        
+        echo "Running $deploy_command"
+        $deploy_command
