@@ -49,11 +49,13 @@ runs:
         pushd "$(mktemp -d)"
         wget $url -O $asset --progress=dot:mega
         tar -xf $asset
-        echo "::set-output name=bacon_bin::$(pwd)/bacon"
+
+        bacon_bin="$(pwd)/bacon"
+        echo "BACON_BIN=$bacon_bin" >> "$GITHUB_OUTPUT"
     - name: Deploy records
       shell: bash
       env:
-        BACON_BIN: ${{ steps.download-bacon.outputs.bacon_bin }}
+        BACON_BIN: ${{ steps.color-selector.outputs.BACON_BIN }}
         PORKBUN_API_KEY: ${{ inputs.api-key }}
         PORKBUN_SECRET_KEY: ${{ inputs.secret-key }}
       run: |
