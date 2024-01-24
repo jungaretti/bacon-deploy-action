@@ -34,9 +34,11 @@ runs:
         if [ "$version" = "latest" ]; then
           version="$(curl -s "https://api.github.com/repos/jungaretti/bacon/releases/latest" | jq -r '.tag_name')"
         fi
+        echo "Downloading version $version"
 
         asset="bacon-$version-linux-amd64.tar.gz"
         url="https://github.com/jungaretti/bacon/releases/download/$version/$asset"
+        echo "Downloading from $url"
 
         # Download Bacon
         pushd "$(mktemp -d)"
@@ -44,6 +46,8 @@ runs:
         tar -xf $asset
 
         bacon_bin="$(pwd)/bacon"
+        echo "Downloaded $bacon_bin"
+
         echo "BACON_BIN=$bacon_bin" >> "$GITHUB_OUTPUT"
     - name: Deploy records
       shell: bash
