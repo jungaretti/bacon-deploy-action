@@ -26,20 +26,13 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: pozetroninc/github-action-get-latest-release@v0.5.0
-      name: Fetch Bacon version
-      id: get-bacon-release
-      with:
-        owner: jungaretti
-        repo: bacon
-        excludes: prerelease, draft
     - name: Download Bacon
       id: download-bacon
       shell: bash
       run: |
         version="${{ inputs.version }}"
         if [ "$version" = "latest" ]; then
-          version="${{ steps.get-bacon-release.outputs.release }}"
+          version="$(curl -s "https://api.github.com/repos/jungaretti/bacon/releases/latest" | jq -r '.tag_name')"
         fi
 
         asset="bacon-$version-linux-amd64.tar.gz"
