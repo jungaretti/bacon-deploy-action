@@ -48,7 +48,7 @@ runs:
     - name: Deploy records
       shell: bash
       env:
-        BACON_BIN: ${{ steps.color-selector.outputs.BACON_BIN }}
+        BACON_BIN: ${{ steps.download-bacon.outputs.BACON_BIN }}
         PORKBUN_API_KEY: ${{ inputs.api-key }}
         PORKBUN_SECRET_KEY: ${{ inputs.secret-key }}
       run: |
