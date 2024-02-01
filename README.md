@@ -33,7 +33,7 @@ jobs:
           delete: true
 ```
 
-### Inputs
+## Inputs
 
 #### `api-key`
 
