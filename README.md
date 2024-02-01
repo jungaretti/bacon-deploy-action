@@ -8,11 +8,9 @@ Sign into Porkbun's website and [generate a new API keyset](https://porkbun.com/
 
 [Create encrypted repository secrets to store your Porkbun API keys](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository) and pass them to this action using `${{ secrets.YOUR_SECRET_NAME }}`.
 
-### Basic Example
+### Example
 
 ```yaml
-# .github/workflows/bacon-deploy.yaml
-
 on:
   push:
     branches:
@@ -33,13 +31,38 @@ jobs:
           delete: true
 ```
 
-### Parameters
+See [`jungaretti/dns`](https://github.com/jungaretti/dns/tree/main/.github/workflows) for a more detailed example.
 
-| Parameter  | Required/Optional | Description                                                     |
-| ---------- | ----------------- | --------------------------------------------------------------- |
-| api-key    | Required          | Your Porkbun API key                                            |
-| secret-key | Required          | Your Porkbun API secret key                                     |
-| config     | Required          | YAML config file for your DNS records                           |
-| create     | Optional          | Flag to create new DNS records. Uses `false` by default.        |
-| delete     | Optional          | Flag to delete outdated DNS records. Uses `false` by default.   |
-| version    | Optional          | Version of Bacon to download and use. Uses `latest` by default. |
+## Inputs
+
+### Required
+
+These inputs are required to use this action. You must provide them in your workflow file.
+
+#### `api-key`
+
+Your Porkbun API key. This input is required.
+
+#### `secret-key`
+
+Your Porkbun API secret key. This input is required.
+
+#### `config`
+
+Path of a Bacon config file to deploy. This input is required.
+
+### Optional
+
+These inputs are optional and have default values.
+
+#### `create`
+
+Flag to disable dry-run creations and create new records. The default value is `false`.
+
+#### `delete`
+
+Flag to disable dry-run deletions and delete outdated records. The default value is `false`.
+
+#### `version`
+
+The version of Bacon to download and use. The default value is `latest`. To use a specific release of Bacon, choose from the releases on [`jungaretti/bacon`](https://github.com/jungaretti/bacon/releases) and use the full tag name (e.g. `v1.2`) as the value for this input.
