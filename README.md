@@ -1,4 +1,4 @@
-# Bacon Deploy Action 🍳
+# Bacon Deploy Action
 
 Deploy DNS records with [Bacon](https://github.com/jungaretti/bacon) and GitHub Actions.
 
