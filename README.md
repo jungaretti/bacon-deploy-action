@@ -8,11 +8,9 @@ Sign into Porkbun's website and [generate a new API keyset](https://porkbun.com/
 
 [Create encrypted repository secrets to store your Porkbun API keys](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository) and pass them to this action using `${{ secrets.YOUR_SECRET_NAME }}`.
 
-### Basic Example
+### Example
 
 ```yaml
-# .github/workflows/bacon-deploy.yaml
-
 on:
   push:
     branches:
@@ -32,6 +30,8 @@ jobs:
           create: true
           delete: true
 ```
+
+See [`jungaretti/dns`](https://github.com/jungaretti/dns/tree/main/.github/workflows) for a more detailed example.
 
 ## Inputs
 
