@@ -1,4 +1,4 @@
-# Bacon Deploy Action
+# Bacon Deploy Action 🍳
 
 Deploy DNS records with [Bacon](https://github.com/jungaretti/bacon) and GitHub Actions.
 
@@ -33,13 +33,28 @@ jobs:
           delete: true
 ```
 
-### Parameters
+### Inputs
 
-| Parameter  | Required/Optional | Description                                                     |
-| ---------- | ----------------- | --------------------------------------------------------------- |
-| api-key    | Required          | Your Porkbun API key                                            |
-| secret-key | Required          | Your Porkbun API secret key                                     |
-| config     | Required          | YAML config file for your DNS records                           |
-| create     | Optional          | Flag to create new DNS records. Uses `false` by default.        |
-| delete     | Optional          | Flag to delete outdated DNS records. Uses `false` by default.   |
-| version    | Optional          | Version of Bacon to download and use. Uses `latest` by default. |
+#### `api-key`
+
+Your Porkbun API key. This input is required.
+
+#### `secret-key`
+
+Your Porkbun API secret key. This input is required.
+
+#### `config`
+
+Bacon config file to deploy. This input is required.
+
+#### `create`
+
+Flag to disable dry-run creations and create new records. The default value is `false`.
+
+#### `delete`
+
+Flag to disable dry-run deletions and delete outdated records. The default value is `false`.
+
+#### `version`
+
+The version of Bacon to download and use. The default value is `latest`. To use a specific release of Bacon, choose from the releases on [`jungaretti/bacon`](https://github.com/jungaretti/bacon/releases) and use the full tag name (e.g. `v1.2`) as the value for this input.
