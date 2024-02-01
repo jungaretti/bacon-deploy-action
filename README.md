@@ -35,6 +35,10 @@ See [`jungaretti/dns`](https://github.com/jungaretti/dns/tree/main/.github/workf
 
 ## Inputs
 
+### Required
+
+These inputs are required to use this action. You must provide them in your workflow file.
+
 #### `api-key`
 
 Your Porkbun API key. This input is required.
@@ -45,7 +49,11 @@ Your Porkbun API secret key. This input is required.
 
 #### `config`
 
-Bacon config file to deploy. This input is required.
+Path of a Bacon config file to deploy. This input is required.
+
+### Optional
+
+These inputs are optional and have default values.
 
 #### `create`
 
