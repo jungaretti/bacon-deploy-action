@@ -59,10 +59,9 @@ runs:
         pushd "$(mktemp -d)"
         wget $BACON_ASSET_URL -O $BACON_ASSET --progress=dot:mega
         tar -xf $BACON_ASSET
-
         bacon_bin="$(pwd)/bacon"
-        echo "Downloaded $bacon_bin"
 
+        echo "Downloaded $bacon_bin"
         echo "BACON_BIN_PATH=$bacon_bin" >> "$GITHUB_OUTPUT"
     - name: bacon ping
       shell: bash
