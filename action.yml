@@ -79,10 +79,17 @@ runs:
         PORKBUN_API_KEY: ${{ inputs.api-key }}
         PORKBUN_SECRET_KEY: ${{ inputs.secret-key }}
       run: |
-        test "${{ inputs.delete }}" = 'true' && DELETE='-d' || DELETE=''
-        test "${{ inputs.create }}" = 'true' && CREATE='-c' || CREATE=''
+        DELETE_FLAG=''
+        if [ "${{ inputs.delete }}" = 'true' ]; then
+          DELETE_FLAG='-d'
+        fi
 
-        deploy_command="$BACON_BIN deploy ${{ inputs.config }} $DELETE $CREATE"
+        CREATE_FLAG=''
+        if [ "${{ inputs.create }}" = 'true' ]; then
+          CREATE_FLAG='-c'
+        fi
+
+        deploy_command="$BACON_BIN deploy ${{ inputs.config }} $DELETE_FLAG $CREATE_FLAG"
         
         echo "Running $deploy_command"
         $deploy_command
