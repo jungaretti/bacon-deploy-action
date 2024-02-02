@@ -26,44 +26,69 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Download Bacon
-      id: download-bacon
+    - name: Select tag
+      id: select-tag
       shell: bash
       run: |
-        version="${{ inputs.version }}"
-        if [ "$version" = "latest" ]; then
-          version="$(curl -s "https://api.github.com/repos/jungaretti/bacon/releases/latest" | jq -r '.tag_name')"
+        tag_name="${{ inputs.version }}"
+        if [ "$tag_name" = "latest" ]; then
+          tag_name="$(curl -s "https://api.github.com/repos/jungaretti/bacon/releases/latest" | jq -r '.tag_name')"
         fi
-        echo "Downloading version $version"
 
-        asset="bacon-$version-linux-amd64.tar.gz"
-        url="https://github.com/jungaretti/bacon/releases/download/$version/$asset"
-        echo "Downloading from $url"
+        echo "Selected tag $tag_name"
+        echo "BACON_TAG_NAME=$tag_name" >> "$GITHUB_OUTPUT"
+    - name: Select asset
+      id: select-asset
+      shell: bash
+      env:
+        BACON_TAG_NAME: ${{ steps.select-tag.outputs.BACON_TAG_NAME }}
+      run: |
+        asset="bacon-$BACON_TAG_NAME-linux-amd64.tar.gz"
+        asset_url="https://github.com/jungaretti/bacon/releases/download/$BACON_TAG_NAME/$asset"
 
-        # Download Bacon
+        echo "Selected asset $asset at $asset_url"
+        echo "BACON_ASSET=$asset" >> "$GITHUB_OUTPUT"
+        echo "BACON_ASSET_URL=$asset_url" >> "$GITHUB_OUTPUT"
+    - name: Download asset
+      id: download-asset
+      shell: bash
+      env:
+        BACON_ASSET: ${{ steps.select-asset.outputs.BACON_ASSET }}
+        BACON_ASSET_URL: ${{ steps.select-asset.outputs.BACON_ASSET_URL }}
+      run: |
         pushd "$(mktemp -d)"
-        wget $url -O $asset --progress=dot:mega
-        tar -xf $asset
+        wget $BACON_ASSET_URL -O $BACON_ASSET --progress=dot:mega
+        tar -xf $BACON_ASSET
 
         bacon_bin="$(pwd)/bacon"
         echo "Downloaded $bacon_bin"
 
-        echo "BACON_BIN=$bacon_bin" >> "$GITHUB_OUTPUT"
-    - name: Deploy records
+        echo "BACON_BIN_PATH=$bacon_bin" >> "$GITHUB_OUTPUT"
+    - name: bacon ping
       shell: bash
       env:
-        BACON_BIN: ${{ steps.download-bacon.outputs.BACON_BIN }}
+        BACON_BIN_PATH: ${{ steps.download-asset.outputs.BACON_BIN_PATH }}
         PORKBUN_API_KEY: ${{ inputs.api-key }}
         PORKBUN_SECRET_KEY: ${{ inputs.secret-key }}
       run: |
-        test "${{ inputs.delete }}" = 'true' && DELETE='-d' || DELETE=''
-        test "${{ inputs.create }}" = 'true' && CREATE='-c' || CREATE=''
+        $BACON_BIN_PATH ping
+    - name: bacon deploy
+      shell: bash
+      env:
+        BACON_BIN_PATH: ${{ steps.download-asset.outputs.BACON_BIN_PATH }}
+        PORKBUN_API_KEY: ${{ inputs.api-key }}
+        PORKBUN_SECRET_KEY: ${{ inputs.secret-key }}
+      run: |
+        DELETE_FLAG=''
+        if [ "${{ inputs.delete }}" = 'true' ]; then
+          DELETE_FLAG='-d'
+        fi
+        echo "Selected delete flag $DELETE_FLAG"
 
-        ping_command="$BACON_BIN ping"
-        deploy_command="$BACON_BIN deploy ${{ inputs.config }} $DELETE $CREATE"
+        CREATE_FLAG=''
+        if [ "${{ inputs.create }}" = 'true' ]; then
+          CREATE_FLAG='-c'
+        fi
+        echo "Selected create flag $CREATE_FLAG"
 
-        echo "Running $ping_command"
-        $ping_command
-        
-        echo "Running $deploy_command"
-        $deploy_command
+        $BACON_BIN_PATH deploy ${{ inputs.config }} $DELETE_FLAG $CREATE_FLAG
