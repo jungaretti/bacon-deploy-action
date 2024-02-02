@@ -63,19 +63,19 @@ runs:
         bacon_bin="$(pwd)/bacon"
         echo "Downloaded $bacon_bin"
 
-        echo "BACON_BIN=$bacon_bin" >> "$GITHUB_OUTPUT"
+        echo "BACON_BIN_PATH=$bacon_bin" >> "$GITHUB_OUTPUT"
     - name: bacon ping
       shell: bash
       env:
-        BACON_BIN: ${{ steps.download-asset.outputs.BACON_BIN }}
+        BACON_BIN_PATH: ${{ steps.download-asset.outputs.BACON_BIN_PATH }}
         PORKBUN_API_KEY: ${{ inputs.api-key }}
         PORKBUN_SECRET_KEY: ${{ inputs.secret-key }}
       run: |
-        $BACON_BIN ping
+        $BACON_BIN_PATH ping
     - name: bacon deploy
       shell: bash
       env:
-        BACON_BIN: ${{ steps.download-asset.outputs.BACON_BIN }}
+        BACON_BIN_PATH: ${{ steps.download-asset.outputs.BACON_BIN_PATH }}
         PORKBUN_API_KEY: ${{ inputs.api-key }}
         PORKBUN_SECRET_KEY: ${{ inputs.secret-key }}
       run: |
@@ -91,4 +91,4 @@ runs:
         fi
         echo "Selected create flag $CREATE_FLAG"
 
-        $BACON_BIN deploy ${{ inputs.config }} $DELETE_FLAG $CREATE_FLAG
+        $BACON_BIN_PATH deploy ${{ inputs.config }} $DELETE_FLAG $CREATE_FLAG
