@@ -64,6 +64,13 @@ runs:
         echo "Downloaded $bacon_bin"
 
         echo "BACON_BIN=$bacon_bin" >> "$GITHUB_OUTPUT"
+    - name: bacon ping
+      shell: bash
+      env:
+        BACON_BIN: ${{ steps.download-asset.outputs.BACON_BIN }}
+        PORKBUN_API_KEY: ${{ inputs.api-key }}
+        PORKBUN_SECRET_KEY: ${{ inputs.secret-key }}
+      run: $BACON_BIN ping
     - name: Deploy records
       shell: bash
       env:
@@ -74,11 +81,7 @@ runs:
         test "${{ inputs.delete }}" = 'true' && DELETE='-d' || DELETE=''
         test "${{ inputs.create }}" = 'true' && CREATE='-c' || CREATE=''
 
-        ping_command="$BACON_BIN ping"
         deploy_command="$BACON_BIN deploy ${{ inputs.config }} $DELETE $CREATE"
-
-        echo "Running $ping_command"
-        $ping_command
         
         echo "Running $deploy_command"
         $deploy_command
