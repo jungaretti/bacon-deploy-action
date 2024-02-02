@@ -83,13 +83,12 @@ runs:
         if [ "${{ inputs.delete }}" = 'true' ]; then
           DELETE_FLAG='-d'
         fi
+        echo "Selected delete flag $DELETE_FLAG"
 
         CREATE_FLAG=''
         if [ "${{ inputs.create }}" = 'true' ]; then
           CREATE_FLAG='-c'
         fi
+        echo "Selected create flag $CREATE_FLAG"
 
-        deploy_command="$BACON_BIN deploy ${{ inputs.config }} $DELETE_FLAG $CREATE_FLAG"
-        
-        echo "Running $deploy_command"
-        $deploy_command
+        $BACON_BIN deploy ${{ inputs.config }} $DELETE_FLAG $CREATE_FLAG
