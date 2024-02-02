@@ -37,20 +37,28 @@ runs:
 
         echo "Selected tag $tag_name"
         echo "BACON_TAG_NAME=$tag_name" >> "$GITHUB_OUTPUT"
-    - name: Download Bacon
-      id: download-bacon
+    - name: Select asset
+      id: select-asset
       shell: bash
       env:
         BACON_TAG_NAME: ${{ steps.select-tag.outputs.BACON_TAG_NAME }}
       run: |
         asset="bacon-$BACON_TAG_NAME-linux-amd64.tar.gz"
-        url="https://github.com/jungaretti/bacon/releases/download/$BACON_TAG_NAME/$asset"
-        echo "Downloading from $url"
+        asset_url="https://github.com/jungaretti/bacon/releases/download/$BACON_TAG_NAME/$asset"
 
-        # Download Bacon
+        echo "Selected asset $asset at $asset_url"
+        echo "BACON_ASSET=$asset" >> "$GITHUB_OUTPUT"
+        echo "BACON_ASSET_URL=$asset_url" >> "$GITHUB_OUTPUT"
+    - name: Download Bacon
+      id: download-bacon
+      shell: bash
+      env:
+        BACON_ASSET: ${{ steps.select-asset.outputs.BACON_ASSET }}
+        BACON_ASSET_URL: ${{ steps.select-asset.outputs.BACON_ASSET_URL }}
+      run: |
         pushd "$(mktemp -d)"
-        wget $url -O $asset --progress=dot:mega
-        tar -xf $asset
+        wget $BACON_ASSET_URL -O $BACON_ASSET --progress=dot:mega
+        tar -xf $BACON_ASSET
 
         bacon_bin="$(pwd)/bacon"
         echo "Downloaded $bacon_bin"
