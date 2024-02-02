@@ -70,7 +70,8 @@ runs:
         BACON_BIN: ${{ steps.download-asset.outputs.BACON_BIN }}
         PORKBUN_API_KEY: ${{ inputs.api-key }}
         PORKBUN_SECRET_KEY: ${{ inputs.secret-key }}
-      run: $BACON_BIN ping
+      run: |
+        $BACON_BIN ping
     - name: bacon deploy
       shell: bash
       env:
